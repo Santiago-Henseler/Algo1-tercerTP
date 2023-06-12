@@ -17,10 +17,17 @@ def main():
             if len(entrada) == 5:
                 comandos.agregar(entrada)
             else:
-                print("Cantidad de parametros invalidos")
+                print("Cantidad de valores invalida, los valores a agregar son:")
+                print("       -->nombre")
+                print("       -->acompañantes")
+                print("       -->hora")
+                print("       -->ubicacion")
                 return
         elif entrada[0] == MODIFY:
-            comandos.modificar(entrada)
+            if len(entrada) == 2:
+               comandos.modificar(entrada)
+            else:
+                print("Cantidad de parametros invalidos")
         elif entrada[0] == DELET:
             if len(entrada) == 2:
                 comandos.eliminar(entrada)
@@ -34,9 +41,17 @@ def main():
                 print("Cantidad de parametros invalidos")
                 return
         else:
-            print("Comando inexistente")
+            print("Comando inexistente, los comando a usar son:")
+            print("       -->Agregar")
+            print("       -->Listar")
+            print("       -->Eliminar")
+            print("       -->Modificar")
     else:
-        print("Comando no especificado")
+        print("Comando no especificado, los comando a usar son:")
+        print("       -->Agregar")
+        print("       -->Listar")
+        print("       -->Eliminar")
+        print("       -->Modificar")
         return  
 
 main()
