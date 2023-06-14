@@ -9,7 +9,6 @@ MODIFY = "modificar"
 DELET = "eliminar"
 LIST = "listar"
 
-
 def main():
     entrada = sys.argv[1:]
     if len(entrada) > 0:

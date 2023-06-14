@@ -2,6 +2,8 @@
 import csv
 import os
 import funciones_auxiliares as faux
+
+DELIMITER = ";"
  
 def agregar(entrada):
     try:
@@ -16,20 +18,20 @@ def agregar(entrada):
         print("error al abrir el archivo: datos.csv en formato de lectura")
         return
     
-    escritor = csv.writer(archivo_escritura, delimiter=";")
+    escritor = csv.writer(archivo_escritura, delimiter=DELIMITER)
     
     if entrada[1].isnumeric():
         print("El nombre elegido es invalido")
     elif not entrada[2].isnumeric():
         print("La cantidad de personas elegida es invalida, tiene que ser un valor numerico")
     elif not faux.hora_valida(entrada[3]):
-        print("La hora elegida es invalida, tiene que estar en formato HH:MM") 
+        print("La hora elegida es invalida, tiene que estar en formato HH:MM (24:60)") 
     elif not faux.ubicacion_valida(entrada[-1]):
         print("La ubicacion elegida es invalida")
     else:
         datos = []
 
-        datos.append(len(archivo_lectura.readlines()))
+        datos.append(len(archivo_lectura.readlines())+1)
         for i in entrada[1:]:
             datos.append(i)
 
@@ -47,29 +49,22 @@ def listar(entrada):
         print("error al abrir el archivo: datos.csv en formato de lectura")
         return
     
-    lector = csv.reader(archivo_lectura, delimiter=";")
-
-    rows = []
-
+    lector = csv.reader(archivo_lectura, delimiter=DELIMITER)
+    
+    if  len(entrada) == 3 and not(entrada[1].isnumeric() and entrada[2].isnumeric()):
+        print("Se debe especificar desde donde hasta donde con valores numericos")
+        archivo_lectura.close()
+        return
+    
     for i in lector:
         if len(entrada) == 3:
             if int(i[0]) >= int(entrada[1]) and int(i[0]) <= int(entrada[2]):
-                rows.append(i)  
+                faux.mostrar_por_pantalla(i)  
         else:
-            rows.append(i)
+            faux.mostrar_por_pantalla(i)
 
     archivo_lectura.close()
 
-    for i in rows:
-        print(f"ID: {i[0]}")
-        print(f"Reserva a nombre de: {i[1]}")
-        print(f"Cantidad de comensales: {i[2]}")
-        print(f"Horario de la reserva: {i[3]}")
-        print(f"Ubicacion de la mesa: {i[4]}")
-        print("\n")
-        print("<----------------------------------->")
-        print("\n")
- 
 def eliminar(entrada):
     try:
         archivo_lectura = faux.abrir_archivo(faux.LECTURA, faux.ARCHIVO_ORIGINAL)
@@ -83,10 +78,8 @@ def eliminar(entrada):
         print("error al abrir el archivo: datos.csv en formato de escritura")
         return
     
-    escritor_aux = csv.writer(archivo_escritura_aux, delimiter=";")
-    lector = csv.reader(archivo_lectura, delimiter=";")
-
-    next(lector)
+    escritor_aux = csv.writer(archivo_escritura_aux, delimiter=DELIMITER)
+    lector = csv.reader(archivo_lectura, delimiter=DELIMITER)
 
     if not entrada[1].isnumeric():
         print("Error, el Id tiene que ser numerico")
@@ -100,10 +93,10 @@ def eliminar(entrada):
             if int(i[0]) == int(entrada[1]):
                 existe_id = True
         if existe_id:      
-            os.renames("aux.csv", "datos.csv")
+            os.renames(faux.NOMBRE_ARCHIVO_AUXILIAR, faux.NOMBRE_ARCHIVO_ORIGINAL)
             print("Eliminado correctamete")
         else:
-            os.remove("aux.csv")
+            os.remove(faux.NOMBRE_ARCHIVO_AUXILIAR)
             print("Id de reserva no existente")
 
     archivo_escritura_aux.close()
@@ -116,7 +109,7 @@ def modificar(entrada):
         print("error al abrir el archivo: datos.csv en formato de lectura")
         return
     
-    lector = csv.reader(archivo_lectura, delimiter=";")
+    lector = csv.reader(archivo_lectura, delimiter=DELIMITER)
 
     if not entrada[1].isnumeric():
         print("Error, el Id tiene que ser numerico")
@@ -141,7 +134,7 @@ def modificar(entrada):
                     print("error al abrir el archivo: datos.csv en formato de escritura")
                     return
 
-                escritor_aux = csv.writer(archivo_escritura_aux, delimiter=";")
+                escritor_aux = csv.writer(archivo_escritura_aux, delimiter=DELIMITER)
                 
                 existe_id = False
 
@@ -176,13 +169,13 @@ def modificar(entrada):
                 if existe_id:
                     archivo_lectura.close()
                     archivo_escritura_aux.close()
-                    os.renames("aux.csv", "datos.csv")
+                    os.renames(faux.NOMBRE_ARCHIVO_AUXILIAR, faux.NOMBRE_ARCHIVO_ORIGINAL)
                     return
                 else:
                     print("Id seleccionado invalido")
                     archivo_lectura.close()
                     archivo_escritura_aux.close()
-                    os.remove("aux.csv")
+                    os.remove(faux.NOMBRE_ARCHIVO_AUXILIAR)
                     return
 
             else:
