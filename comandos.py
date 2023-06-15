@@ -50,18 +50,26 @@ def listar(entrada):
         return
     
     lector = csv.reader(archivo_lectura, delimiter=DELIMITER)
-    
-    if  len(entrada) == 3 and not(entrada[1].isnumeric() and entrada[2].isnumeric()):
-        print("Se debe especificar desde donde hasta donde con valores numericos")
+
+    if  len(entrada) == 3 and not(entrada[1].isnumeric() and entrada[2].isnumeric()) or (int(entrada[1]) > int(entrada[2])):
+        print("Se debe especificar desde donde hasta donde con valores numericos de menor a mayor")
         archivo_lectura.close()
         return
     
+    existe_rango = False
+
     for i in lector:
         if len(entrada) == 3:
             if int(i[0]) >= int(entrada[1]) and int(i[0]) <= int(entrada[2]):
-                faux.mostrar_por_pantalla(i)  
+                faux.mostrar_por_pantalla(i)
+                existe_rango = True
         else:
             faux.mostrar_por_pantalla(i)
+            existe_rango = True
+
+
+    if not existe_rango:
+        print("Fuera del rango existente de reservas")
 
     archivo_lectura.close()
 
